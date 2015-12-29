@@ -14,6 +14,13 @@ namespace Owin.Demo.Controllers
         public ActionResult Login()
         {
             var model = new LoginModel();
+
+            var providers = HttpContext.GetOwinContext()
+               .Authentication.GetAuthenticationTypes(x => !string.IsNullOrEmpty(x.Caption))
+               .ToList();
+            
+            model.AuthProviders = providers;
+
             return View(model);
         }
 
@@ -32,6 +39,7 @@ namespace Owin.Demo.Controllers
                 });
                 HttpContext.GetOwinContext().Authentication.SignIn(identity);
             }
+            model.AuthProviders = new List<Microsoft.Owin.Security.AuthenticationDescription>();
             return View(model);
         }
 
@@ -39,6 +47,15 @@ namespace Owin.Demo.Controllers
         {
             HttpContext.GetOwinContext().Authentication.SignOut();
             return Redirect("/");
+        }
+
+        public ActionResult SocialLogin(string id)
+        {
+            HttpContext.GetOwinContext().Authentication.Challenge(new Microsoft.Owin.Security.AuthenticationProperties
+            {
+                RedirectUri = "/secret"
+            }, id);
+            return new HttpUnauthorizedResult();
         }
     }
 }

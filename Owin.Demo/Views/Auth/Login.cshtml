@@ -28,5 +28,12 @@
             </div>
         }
     </div>
+    @foreach (var provider in Model.AuthProviders)
+    {
+        <div>
+            @Html.ActionLink("Log in with " + provider.Caption,
+            "SocialLogin", new { id = provider.AuthenticationType })
+    </div>
+    }
 </body>
 </html>

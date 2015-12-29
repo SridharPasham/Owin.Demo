@@ -38,8 +38,24 @@ namespace Owin.Demo
                 LoginPath = new Microsoft.Owin.PathString("/Auth/Login")
             });
 
+            app.UseFacebookAuthentication(new Microsoft.Owin.Security.Facebook.FacebookAuthenticationOptions
+            {
+                AppId = "[INSERT APP ID FACEBOOK APP]",
+                AppSecret = "[INSERT APP SECRET FOR FACEBOOK APP]",
+                SignInAsAuthenticationType = "ApplicationCookie"
+            });
+
+            app.UseTwitterAuthentication(new Microsoft.Owin.Security.Twitter.TwitterAuthenticationOptions
+            {
+                ConsumerKey = "[INSERT CONSUMER KEY FOR TWITTER APP]",
+                ConsumerSecret = "[INSERT CONSUMER SECRET FOR TWITTER APP]",
+                SignInAsAuthenticationType = "ApplicationCookie",
+                BackchannelCertificateValidator = null
+            });
+
             // how to use katana authentication in middle ware
             app.Use(async (ctx, next) => {
+                
                 if(ctx.Authentication.User.Identity.IsAuthenticated)
                 {
                     Debug.WriteLine("User authenticated, User Name: " + ctx.Authentication.User.Identity.Name);
